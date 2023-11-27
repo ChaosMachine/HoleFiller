@@ -1,0 +1,198 @@
+<head>
+    <script
+    src="https://code.jquery.com/jquery-3.7.1.js"
+    integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>    
+<script src="https://cdn.jsdelivr.net/gh/mgalante/jquery.redirect@master/jquery.redirect.js"></script>
+</head> 
+
+
+<style>
+
+    table{
+        border-collapse:collapse;
+        border:1px solid #000000;
+        }
+        
+        table td{
+        border:1px solid #000000;
+        }
+        
+        #NaN {
+          color:red;
+          display:none;
+        }
+</style>
+<p>
+    <strong>Phillip von Jolly, the holefiller</strong>
+    </p>
+    
+    <p><strong>Stolen without shame from <a href="http://stackoverflow.com/questions/2006468/copy-paste-from-excel-to-a-web-page">http://stackoverflow.com/questions/2006468/copy-paste-from-excel-to-a-web-page</a></strong></p>
+    
+    <div style="display:flex">
+    <div>
+        <p>N of plots:</p>
+    <input type="number" id="Npoints" name="Npoints" min="0" max="1000" />
+    <div id="NaN">
+      Invalid Value
+    </div>
+    
+    
+    <p>Paste excel data here in format X1|Y1|sigma1|{X2|Y2... |sigmaN}:</p>
+        <textarea name="excel_data" style="width:250px;height:150px;"></textarea><br>
+        <input type="button" onclick="javascript:generateTable()" value="Generate Table"/>
+    <br><br>
+        <p>Table data will appear below</p>
+    <hr>
+    <div id="excel_table"></div>
+    
+    <input type="button" onclick="javascript:sendData()" value="Send data"/>
+
+    </div>
+    
+    <div>
+        <table>
+            <tbody><tr><td>Legenda </td><td><input type="TEXT" size="33" name="legenda1" value=""> </td></tr>
+          <tr><td>Typ bodů</td><td>
+            <select name="typ_bodu1" size="1">
+                    <option value="1" selected="">1
+              </option><option value="2">2
+              </option><option value="3">3
+              </option><option value="4">4
+              </option><option value="5">5
+              </option><option value="6">6
+            </option></select>
+          </td></tr>
+          <tr><td>Velikost bodů</td><td>
+            <select name="vel_bodu1" size="1">
+                    <option value="1" selected="">1
+              </option><option value="2">2
+              </option><option value="3">3
+              </option><option value="4">4
+            </option></select>
+          </td></tr>
+          <tr><td>Barva</td><td>
+            <select name="barva1" size="1">
+                    <option value="1" selected="">1
+              </option><option value="2">2
+              </option><option value="3">3
+              </option><option value="4">4
+              </option><option value="5">5
+              </option><option value="6">6
+              </option><option value="7">7
+              </option><option value="8">8
+            </option></select>
+          </td></tr>
+          <tr><td>Proložit  </td><td>
+            <select name="r_pol1" size="1">
+                    <option value="0"> exponenciálou
+              </option><option value="1" selected=""> polynomem 1. stupně (přímkou)
+              </option><option value="2"> polynomem 2. stupně (parabolou)
+              </option><option value="3"> polynomem 3. stupně
+              </option><option value="4"> polynomem 4. stupně
+              </option><option value="5"> polynomem 5. stupně
+              </option><option value="6"> přímkou procházející počátkem
+              </option><option value="7"> druhou mocninou
+            </option></select>
+          </td></tr>
+          </tbody></table>
+    </div>
+</div>
+    
+    <script type="text/javascript">
+        url= "https://planck.fel.cvut.cz/praktikum/grafy/ukaz.php"
+        str =" --compressed -X POST -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/119.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Origin: https://planck.fel.cvut.cz' -H 'DNT: 1' -H 'Connection: keep-alive' -H 'Referer: https://planck.fel.cvut.cz/praktikum/grafy/vloz.php' -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-Fetch-Dest: document' -H 'Sec-Fetch-Mode: navigate' -H 'Sec-Fetch-Site: same-origin' -H 'Sec-Fetch-User: ?1' "
+data = "'pocet_cl1=12&data_x11=39046%2C1&data_y11=&data_s11=&data_x12=39071%2C50&data_y12=&data_s12=&data_x13=39038%2C7&data_y13=&data_s13=&data_x14=39078%2C9&data_y14=&data_s14=&data_x15=39029%2C6&data_y15=&data_s15=&data_x16=39086%2C8&data_y16=&data_s16=&data_x17=39024%2C1&data_y17=&data_s17=&data_x18=39090%2C8&data_y18=&data_s18=&data_x19=39006%2C6&data_y19=&data_s19=&data_x110=39101%2C0&data_y110=&data_s110=&data_x111=39018%2C2&data_y111=&data_s111=&data_x112=39096%2C1&data_y112=&data_s112=&legenda1=&typ_bodu1=1&vel_bodu1=1&barva1=1&r_pol1=1&nadpis=&pop_x=&pop_y=&x_min=&x_max=&y_min=&y_max=&pocet_pr=1"
+
+let x = [];
+let y = [];
+let tabulka = [];
+let pocetBod= 0;
+let pocetPlot=1;
+
+function generateTable() {
+		
+  	$("#NaN").css("display","none");
+	var Npoints = $('input[name=Npoints]').val();
+  if(isNaN(Npoints) || Npoints==="" || parseInt(Npoints)===0){
+  	$('#NaN').css("display","block");
+    console.log("changing")
+  }
+  else{
+  pocetPlot=parseInt(Npoints);
+  }
+    var data = $('textarea[name=excel_data]').val();
+    console.log(data);
+var rows = data.split("\n");
+while(rows[rows.length-1]==""){
+    rows.pop();
+}
+
+var table = $('<table />');
+tabulka=[];
+for(var h in rows) {
+    tabulka.push([]);
+    var cells = rows[h].split("\t");
+    var row = $('<tr />');
+    for(var w in cells) {
+        row.append('<td>'+cells[w]+'</td>');
+        tabulka[tabulka.length - 1].push(cells[w]);
+    }
+    table.append(row);
+}
+
+
+// Insert into DOM
+$('#excel_table').html(table);
+}
+
+function sendData(){
+const re= /,|\./;
+h=tabulka.length;
+w=3*pocetPlot;
+//data="pocet_pr="+pocetPlot+"&nadpis=&pop_x=&pop_y=&x_min=&x_max=&y_min=&y_max=";
+data = {}
+for (let i = 0;i<h;i++){
+	for(let j=0;j<w;j+=3){
+        console.log(i,j);
+  	let x=tabulka[i][j];
+    x=x.replace(re,'%2C');
+    let y=tabulka[i][j+1];
+    y=y.replace(re,'%2C');
+    s=tabulka[i][j+2];
+    s=s.replace(re,'%2C');
+    data["data_x"+Math.round(j/3+1)+(i+1)]=x;
+    data["data_y"+Math.round(j/3+1)+(i+1)]=y;
+    data["data_s"+Math.round(j/3+1)+(i+1)]=s;
+    data["pocet_cl"+Math.round(j/3+1)]=h;
+
+    data["barva"+Math.round(j/3+1)]=$("select[name=barva"+Math.round(j/3+1)+"]").val();
+    data["rpol_"+Math.round(j/3+1)]=$("select[name=r_pol"+Math.round(j/3+1)+"]").val();
+    data["legenda"+Math.round(j/3+1)]=$("input[name=legenda"+Math.round(j/3+1)+"]").val();
+    data["typ_bodu"+Math.round(j/3+1)]=$("select[name=typ_bodu"+Math.round(j/3+1)+"]").val();
+    data["vel_bodu"+Math.round(j/3+1)]=$("select[name=vel_bodu"+Math.round(j/3+1)+"]").val();
+  	//data+=("&data_x"+Math.round(j/3+1)+(i+1)+"="+x+"&data_y"+Math.round(j/3+1)+(i+1)+"="+y+"&data_s"+Math.round(j/3+1)+(i+1)+"="+s);
+  }
+}
+data = {
+    ...data,
+    "nadpis":"",
+    "pop_x":"",
+    "pop_y":"",
+    "x_min":"",
+    "x_max":"",
+    "y_min":"",
+    "y_max":"",
+    "autobus":"1",
+    "vlak":Date.now()
+}
+data["pocet_pr"]=Math.round(w/3);
+//data+="&pocet_cl"+1+"="+h;
+console.log(data);
+
+// jquery extend function
+$.redirect(url,data,"POST",[],[],[],true);
+
+
+}
+    </script>
