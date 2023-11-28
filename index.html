@@ -8,6 +8,15 @@
 
 
 <style>
+  #name{
+    font-family:Verdana;
+    font-style: italic;
+  }
+  #name strong{
+    
+    font-size: 7vh;
+
+  }
 
     table{
         border-collapse:collapse;
@@ -22,9 +31,18 @@
           color:red;
           display:none;
         }
+        #plotOptions{
+          border: solid red 1px;
+        }
+  body{
+    background-color: #ffcccc;
+  }
 </style>
-<p>
+<body onload="addOption()">
+<p id="name">
     <strong>Phillip von Jolly, the holefiller</strong>
+    <br>
+    All that remains is just to fill some unimportant holes...
     </p>
     
     <p><strong>Stolen without shame from <a href="http://stackoverflow.com/questions/2006468/copy-paste-from-excel-to-a-web-page">http://stackoverflow.com/questions/2006468/copy-paste-from-excel-to-a-web-page</a></strong></p>
@@ -32,7 +50,7 @@
     <div style="display:flex">
     <div>
         <p>N of plots:</p>
-    <input type="number" id="Npoints" name="Npoints" min="0" max="1000" />
+    <input type="number" id="Npoints" name="Npoints" min="1" max="1000" onchange="addOption()" value="1"/>
     <div id="NaN">
       Invalid Value
     </div>
@@ -51,51 +69,9 @@
     </div>
     
     <div>
-        <table>
-            <tbody><tr><td>Legenda </td><td><input type="TEXT" size="33" name="legenda1" value=""> </td></tr>
-          <tr><td>Typ bodů</td><td>
-            <select name="typ_bodu1" size="1">
-                    <option value="1" selected="">1
-              </option><option value="2">2
-              </option><option value="3">3
-              </option><option value="4">4
-              </option><option value="5">5
-              </option><option value="6">6
-            </option></select>
-          </td></tr>
-          <tr><td>Velikost bodů</td><td>
-            <select name="vel_bodu1" size="1">
-                    <option value="1" selected="">1
-              </option><option value="2">2
-              </option><option value="3">3
-              </option><option value="4">4
-            </option></select>
-          </td></tr>
-          <tr><td>Barva</td><td>
-            <select name="barva1" size="1">
-                    <option value="1" selected="">1
-              </option><option value="2">2
-              </option><option value="3">3
-              </option><option value="4">4
-              </option><option value="5">5
-              </option><option value="6">6
-              </option><option value="7">7
-              </option><option value="8">8
-            </option></select>
-          </td></tr>
-          <tr><td>Proložit  </td><td>
-            <select name="r_pol1" size="1">
-                    <option value="0"> exponenciálou
-              </option><option value="1" selected=""> polynomem 1. stupně (přímkou)
-              </option><option value="2"> polynomem 2. stupně (parabolou)
-              </option><option value="3"> polynomem 3. stupně
-              </option><option value="4"> polynomem 4. stupně
-              </option><option value="5"> polynomem 5. stupně
-              </option><option value="6"> přímkou procházející počátkem
-              </option><option value="7"> druhou mocninou
-            </option></select>
-          </td></tr>
-          </tbody></table>
+        <div id="plotOptions">
+
+        </div>
           <H3>Údaje týkající se celého grafu<BR><HR ALIGN=LEFT></H3>
             <TABLE>
             <TR>
@@ -142,7 +118,7 @@
               </TABLE>
     </div>
 </div>
-    
+</body>   
     <script type="text/javascript">
         url= "https://planck.fel.cvut.cz/praktikum/grafy/ukaz.php"
         str =" --compressed -X POST -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/119.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Origin: https://planck.fel.cvut.cz' -H 'DNT: 1' -H 'Connection: keep-alive' -H 'Referer: https://planck.fel.cvut.cz/praktikum/grafy/vloz.php' -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-Fetch-Dest: document' -H 'Sec-Fetch-Mode: navigate' -H 'Sec-Fetch-Site: same-origin' -H 'Sec-Fetch-User: ?1' "
@@ -194,6 +170,7 @@ $('#excel_table').html(table);
 }
 
 function sendData(){
+  generateTable();
 const re= /,|\./;
 h=tabulka.length;
 w=3*pocetPlot;
@@ -214,7 +191,7 @@ for (let i = 0;i<h;i++){
     data["pocet_cl"+Math.round(j/3+1)]=h;
 
     data["barva"+Math.round(j/3+1)]=$("select[name=barva"+Math.round(j/3+1)+"]").val();
-    data["rpol_"+Math.round(j/3+1)]=$("select[name=r_pol"+Math.round(j/3+1)+"]").val();
+    data["r_pol"+Math.round(j/3+1)]=$("select[name=r_pol"+Math.round(j/3+1)+"]").val();
     data["legenda"+Math.round(j/3+1)]=$("input[name=legenda"+Math.round(j/3+1)+"]").val();
     data["typ_bodu"+Math.round(j/3+1)]=$("select[name=typ_bodu"+Math.round(j/3+1)+"]").val();
     data["vel_bodu"+Math.round(j/3+1)]=$("select[name=vel_bodu"+Math.round(j/3+1)+"]").val();
@@ -226,11 +203,12 @@ data = {
     "nadpis":$("input[name=nadpis]").val(),
     "pop_x":$("input[name=pop_x]").val(),
     "pop_y":$("input[name=pop_y]").val(),
+    "errorbary":$("input[name=errorbary]").val(),
     "x_min":$("input[name=x_min]").val(),
     "x_max":$("input[name=x_max]").val(),
     "y_min":$("input[name=y_min]").val(),
     "y_max":$("input[name=y_max]").val(),
-    "mrizka":$("input[name=mrizka]").val()
+    "mrizka":1*$("input[name=mrizka]").is(':checked') 
 }
 data["pocet_pr"]=Math.round(w/3);
 //data+="&pocet_cl"+1+"="+h;
@@ -238,6 +216,69 @@ console.log(data);
 
 // jquery extend function
 $.redirect(url,data,"POST",[],[],[],true);
+
+
+}
+
+function addOption(){
+  generateTable();
+  
+  var Npoints = $('input[name=Npoints]').val();
+  console.log(Npoints);
+  $("#plotOptions").empty();
+  for(var i=1;i<=Npoints;i++){
+    var strVar="<h4>Nastavení průběhu "+i+"</h4>";
+      strVar += "  <table>";
+      strVar += "    <tbody><tr><td>Legenda <\/td><td><input type=\"TEXT\" size=\"33\" name=\"legenda+"+i+"\" value=\"\"> <\/td><\/tr>";
+      strVar += "  <tr><td>Typ bodů<\/td><td>";
+      strVar += "    <select name=\"typ_bodu"+i+"\" size=\"1\">";
+      strVar += "            <option value=\"1\" selected=\"\">1";
+      strVar += "      <\/option><option value=\"2\">2";
+      strVar += "      <\/option><option value=\"3\">3";
+      strVar += "      <\/option><option value=\"4\">4";
+      strVar += "      <\/option><option value=\"5\">5";
+      strVar += "      <\/option><option value=\"6\">6";
+      strVar += "    <\/option><\/select>";
+      strVar += "  <\/td><\/tr>";
+      strVar += "  <tr><td>Velikost bodů<\/td><td>";
+      strVar += "    <select name=\"vel_bodu"+i+"\" size=\"1\">";
+      strVar += "            <option value=\"1\" selected=\"\">1";
+      strVar += "      <\/option><option value=\"2\">2";
+      strVar += "      <\/option><option value=\"3\">3";
+      strVar += "      <\/option><option value=\"4\">4";
+      strVar += "    <\/option><\/select>";
+      strVar += "  <\/td><\/tr>";
+      strVar += "  <tr><td>Barva<\/td><td>";
+      strVar += "    <select name=\"barva"+i+"\" size=\"1\">";
+      strVar += "            <option value=\"1\" selected=\"\">1";
+      strVar += "      <\/option><option value=\"2\">2";
+      strVar += "      <\/option><option value=\"3\">3";
+      strVar += "      <\/option><option value=\"4\">4";
+      strVar += "      <\/option><option value=\"5\">5";
+      strVar += "      <\/option><option value=\"6\">6";
+      strVar += "      <\/option><option value=\"7\">7";
+      strVar += "      <\/option><option value=\"8\">8";
+      strVar += "    <\/option><\/select>";
+      strVar += "  <\/td><\/tr>";
+      strVar += "  <tr><td>Proložit  <\/td><td>";
+      strVar += "    <select name=\"r_pol"+i+"\" size=\"1\">";
+      strVar += "            <option value=\"0\"> exponenciálou";
+      strVar += "      <\/option><option value=\"1\" selected=\"\"> polynomem 1. stupně (přímkou)";
+      strVar += "      <\/option><option value=\"2\"> polynomem 2. stupně (parabolou)";
+      strVar += "      <\/option><option value=\"3\"> polynomem 3. stupně";
+      strVar += "      <\/option><option value=\"4\"> polynomem 4. stupně";
+      strVar += "      <\/option><option value=\"5\"> polynomem 5. stupně";
+      strVar += "      <\/option><option value=\"6\"> přímkou procházející počátkem";
+      strVar += "      <\/option><option value=\"7\"> druhou mocninou";
+      strVar += "    <\/option><\/select>";
+      strVar += "  <\/td><\/tr>";
+      strVar += "  <\/tbody><\/table>";
+      strVar += "  ";
+
+      $("#plotOptions").append(strVar);
+  }
+  
+
 
 
 }
