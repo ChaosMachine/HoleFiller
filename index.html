@@ -96,6 +96,50 @@
             </option></select>
           </td></tr>
           </tbody></table>
+          <H3>Údaje týkající se celého grafu<BR><HR ALIGN=LEFT></H3>
+            <TABLE>
+            <TR>
+            <TD>Nadpis grafu  </TD>
+            <TD><INPUT TYPE=TEXT NAME=nadpis SIZE=35 VALUE=""></TD>
+            </TR>
+            <TR>
+            <TD>Popis osy X  </TD>
+            <TD><INPUT TYPE=TEXT NAME=pop_x SIZE=25 VALUE=""></TD>
+            </TR>
+            <TR>
+            <TD>Popis osy Y  </TD>
+            <TD><INPUT TYPE=TEXT NAME=pop_y SIZE=25 VALUE=""></TD>
+            </TR>
+            </TABLE>
+
+
+            <TABLE>
+              <TR>
+              <TD>Vyznačit nejistoty na ose Y &nbsp;&nbsp; </TD><TD><INPUT TYPE=CHECKBOX NAME=errorbary VALUE=1 ></TD>
+              </TR>
+              </TABLE>
+              
+              <BR>
+              <TABLE>
+              <TR>
+              <TD>X min </TD>
+              <TD><INPUT TYPE=TEXT NAME=x_min SIZE=5 VALUE=""></TD>
+              <TD> &nbsp;&nbsp; X max </TD>
+              <TD><INPUT TYPE=TEXT NAME=x_max SIZE=5 VALUE=""></TD>
+              </TR>
+              <TR>
+              <TD>Y min </TD>
+              <TD><INPUT TYPE=TEXT NAME=y_min SIZE=5 VALUE=""></TD>
+              <TD> &nbsp;&nbsp; Y max </TD>
+              <TD><INPUT TYPE=TEXT NAME=y_max SIZE=5 VALUE=""></TD>
+              </TR>
+              </TABLE>
+              <BR>
+              <TABLE>
+              <TR>
+              <TD>Mřížka &nbsp;&nbsp; </TD><TD><INPUT TYPE=CHECKBOX NAME=mrizka VALUE=1 ></TD>
+              </TR>
+              </TABLE>
     </div>
 </div>
     
@@ -179,13 +223,14 @@ for (let i = 0;i<h;i++){
 }
 data = {
     ...data,
-    "nadpis":"",
-    "pop_x":"",
-    "pop_y":"",
-    "x_min":"",
-    "x_max":"",
-    "y_min":"",
-    "y_max":""
+    "nadpis":$("input[name=nadpis]").val(),
+    "pop_x":$("input[name=pop_x]").val(),
+    "pop_y":$("input[name=pop_y]").val(),
+    "x_min":$("input[name=x_min]").val(),
+    "x_max":$("input[name=x_max]").val(),
+    "y_min":$("input[name=y_min]").val(),
+    "y_max":$("input[name=y_max]").val(),
+    "mrizka":$("input[name=mrizka]").val()
 }
 data["pocet_pr"]=Math.round(w/3);
 //data+="&pocet_cl"+1+"="+h;
