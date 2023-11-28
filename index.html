@@ -133,6 +133,9 @@ tabulka=[];
 for(var h in rows) {
     tabulka.push([]);
     var cells = rows[h].split("\t");
+    if(cells.length<2){
+      cells= rows[h].split(" ");
+    }
     var row = $('<tr />');
     for(var w in cells) {
         row.append('<td>'+cells[w]+'</td>');
@@ -156,11 +159,11 @@ for (let i = 0;i<h;i++){
 	for(let j=0;j<w;j+=3){
         console.log(i,j);
   	let x=tabulka[i][j];
-    x=x.replace(re,'%2C');
+    //x=x.replace(re,'%2C');
     let y=tabulka[i][j+1];
-    y=y.replace(re,'%2C');
+    //y=y.replace(re,'%2C');
     s=tabulka[i][j+2];
-    s=s.replace(re,'%2C');
+    //s=s.replace(re,'%2C');
     data["data_x"+Math.round(j/3+1)+(i+1)]=x;
     data["data_y"+Math.round(j/3+1)+(i+1)]=y;
     data["data_s"+Math.round(j/3+1)+(i+1)]=s;
@@ -182,9 +185,7 @@ data = {
     "x_min":"",
     "x_max":"",
     "y_min":"",
-    "y_max":"",
-    "autobus":"1",
-    "vlak":Date.now()
+    "y_max":""
 }
 data["pocet_pr"]=Math.round(w/3);
 //data+="&pocet_cl"+1+"="+h;
